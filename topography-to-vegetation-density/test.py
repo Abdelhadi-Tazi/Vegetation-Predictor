@@ -1,3 +1,4 @@
+
 import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
@@ -7,7 +8,7 @@ import normalization as norm
 import numpy as np
 import labeling
 
-MODEL_DIRECTORY = './models/model5'
+MODEL_DIRECTORY = './models/model4'
 INPUT_DIRECTORY = './dbALPES_test/topo' 
 OUTPUT_DIRECTORY = './dbALPES_test/dens_seuil'
 NORMALIZATION_TYPE = 'standard' #'standard' or 'car_self' or 'car_dataset' #must match the normalization of the training dataset
@@ -65,15 +66,23 @@ mean_recall = np.mean([r for r in recall if r == r])
 mean_f1 = np.mean([f for f in f1 if f == f])
 
 print("Delabeling predctions")
-delabeled_flat_predictions = labeling.invert_labels(np.array(flat_predictions))
+delabeled_flat_predictions = np.array(labeling.invert_labels(np.array(flat_predictions)))
 print("Delabeling true results")
-delabeled_flat_true = labeling.invert_labels(np.array(flat_true))
+delabeled_flat_true = np.array(labeling.invert_labels(np.array(flat_true)))
 
 #Calculate mse for thresholds
 print("Calculating regression metrics")
 
-mse = tf.keras.metrics.mean_squared_error(delabeled_flat_true, delabeled_flat_predictions)
+rss = np.sum(np.square(delabeled_flat_predictions - delabeled_flat_true))
 
+mean = np.mean(delabeled_flat_true)
+
+ess = np.sum(np.square(delabeled_flat_predictions - mean))
+
+tss = np.sum(np.square(delabeled_flat_true - mean))
+
+#Calculate r2
+r2 = ess/tss
 
 print("#####################TEST RESULTS##########################")
 print("")
@@ -99,7 +108,6 @@ print("Mean F1-score : {}".format(mean_f1))
 print("")
 
 print("REGRESSION METRICS :")
-print("SQRT MSE : {}".format(np.sqrt(mse)))
-
-print("Displaying predicitions")
-disp.display_all_predictions(model, test_set, DATASET_SIZE)
+print("SQRT MSE : {}".format(np.sqrt(rss/len(delabeled_flat_predictions))))
+print("R2-coefficient : {}".format(r2))
+disp.display_predictions(model, test_set)
