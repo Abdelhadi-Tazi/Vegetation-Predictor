@@ -7,8 +7,9 @@ import display_manager as disp
 import normalization as norm
 import numpy as np
 import labeling
+import unet
 
-MODEL_DIRECTORY = './models/model4'
+MODEL_DIRECTORY = './models_weights/6/model6_weights.ckpt'
 INPUT_DIRECTORY = './dbALPES_test/topo' 
 OUTPUT_DIRECTORY = './dbALPES_test/dens_seuil'
 NORMALIZATION_TYPE = 'standard' #'standard' or 'car_self' or 'car_dataset' #must match the normalization of the training dataset
@@ -22,8 +23,8 @@ tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 #load the trained model
 print("Loading model")
-model = tf.keras.models.load_model(MODEL_DIRECTORY)
-
+model = unet.unet_model(input_size = (IMAGES_SHAPE[0], IMAGES_SHAPE[1], 1), n_classes=32)
+model.load_weights(MODEL_DIRECTORY)
 #load the test dataset
 print("Loading test dataset")
 test_set = dm.load_dataset(INPUT_DIRECTORY, OUTPUT_DIRECTORY, IMAGES_SHAPE, DATASET_SIZE)

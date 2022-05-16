@@ -8,7 +8,7 @@ import tensorflow as tf
 import os
 import labeling
 
-MODEL_LOADING_DIRECTORY = './models/model4'
+MODEL_LOADING_DIRECTORY = './models_weights/model4_weights.ckpt'
 MODEL_SAVING_DIRECTORY = './models/model7'
 INPUT_DIRECTORY = './dbALPES1/augmented/topo' 
 OUTPUT_DIRECTORY = './dbALPES1/augmented/dens_seuil'
@@ -69,7 +69,7 @@ validation_dataset = validation_dataset.cache()
 #create a unet model
 model = unet.unet_model(input_size = (IMAGES_SHAPE[0], IMAGES_SHAPE[1], 1), dropout_probability = DROPOUT_PROB, regularization=L2_REGULARIZATION, n_classes = N_CLASSES)
 if LOAD_MODEL:
-    model = tf.keras.models.load_model(MODEL_LOADING_DIRECTORY)
+    model.load_weights(MODEL_LOADING_DIRECTORY)
 model.summary()
 
 

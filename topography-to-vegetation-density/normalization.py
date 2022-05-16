@@ -16,7 +16,8 @@ def standard_normalization_image(image):
     return ((image-CHARACTERISTIC_MEAN)/CHARACTERISTIC_STD)
 
 def standard_normalization(dataset):
-    dataset = dataset.map(lambda x, y: standard_normalization_image(x), y)
+
+    dataset = dataset.map(lambda x, y: (standard_normalization_image(x), y))
     return dataset
 
 
