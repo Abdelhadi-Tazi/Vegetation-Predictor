@@ -11,7 +11,7 @@ import labeling
 import unet
 
 
-MODEL_DIRECTORY = './models_weights/4/model4_weights.ckpt'
+MODEL_DIRECTORY = './models/h5/model6.h5'
 INPUT_IMAGE = './dbALPES_test/topo/topo1_1.npy' #path to the image to predict
 SAVING_DIRECTORY = "./generated_cds/"
 NORMALIZATION_TYPE = 'standard' #'standard' or 'car_self' or 'car_dataset' #must match the normalization of the training dataset
@@ -26,8 +26,7 @@ tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 #load the trained model
 print("Loading model")
-model = unet.unet_model(input_size = (INPUT_SHAPE[0], INPUT_SHAPE[1], 1), n_classes=32)
-model.load_weights(MODEL_DIRECTORY)
+model = tf.keras.models.load_model(MODEL_DIRECTORY)
 #load the image
 print("Loading image")
 image = np.load(INPUT_IMAGE)
